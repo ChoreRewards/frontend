@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './scss/_custom.scss'
 import App from './components/App/App.js';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from 'mobx-react'

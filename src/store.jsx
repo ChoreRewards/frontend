@@ -1,19 +1,22 @@
 import { makeAutoObservable } from "mobx"
-import { observer } from "mobx-react"
 
 class Store {
-    secondsPassed = 0
-
     constructor() {
         makeAutoObservable(this)
     }
 
-    increase() {
-        this.secondsPassed += 1
+    loginState = null
+
+    resetLoginError () {
+        this.loginState.error = null
     }
 
-    reset() {
-        this.secondsPassed = 0
+    login ({username, password}) {
+        if (!username || !password) {
+            this.loginState = {
+                error: 'Please provide username and password',
+            }
+        }
     }
 }
 

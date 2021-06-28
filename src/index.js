@@ -1,19 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import './scss/_custom.scss'
-import App from './components/App/App.js';
-import reportWebVitals from './reportWebVitals';
-import {Provider} from 'mobx-react'
+import React from "react";
+import ReactDOM from "react-dom";
 
-import store from './store'
+import "./index.css";
+import "./scss/_custom.scss";
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-);
+import { App } from "./components";
+import reportWebVitals from "./reportWebVitals";
+
+ReactDOM.render(<App />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

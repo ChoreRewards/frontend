@@ -1,0 +1,10 @@
+@import "../../scss/_extend.scss";
+
+.login {
+  @extend %form-container;
+  height: auto !important;
+
+  a {
+    cursor: pointer;
+  }
+}

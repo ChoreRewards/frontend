@@ -1,101 +1,121 @@
-import React, {Component} from 'react'
-import {inject, observer} from 'mobx-react'
-import './Login.scss'
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { withRouter, Redirect } from 'react-router-dom';
 
-class Login extends Component {
-  constructor(props) {
-    super(props)
+import './Login.scss';
 
-    this.state = {
-      username: '',
-      password: ''
-    }
-  }
+const Login = inject('AuthStore')(
+  withRouter(
+    observer(
+      class Login extends Component {
+        constructor(props) {
+          super(props);
 
-  clearErrors = () => {
-    if (this.props.store.loginState) {
-      this.props.store.resetLoginError()
-    }
-  }
+          this.state = {
+            username: '',
+            password: '',
+          };
+        }
 
-  handleUsernameChange = e => {
-    this.clearErrors()
-    this.setState({username: e.target.value});
-  }
+        clearErrors = () => {
+          if (this.props.AuthStore.loginState) {
+            this.props.AuthStore.resetLoginError();
+          }
+        };
 
-  handlePasswordChange = e => {
-    this.clearErrors()
-    this.setState({password: e.target.value});
-  }
+        handleUsernameChange = (e) => {
+          this.clearErrors();
+          this.setState({ username: e.target.value });
+        };
 
-  login = e => {
-    e.preventDefault()
-    const {
-      username,
-      password
-    } = this.state
-    this.props.store.login({username, password})
-  }
+        handlePasswordChange = (e) => {
+          this.clearErrors();
+          this.setState({ password: e.target.value });
+        };
 
-  render() {
-    const error = this.props.store.loginState ? this.props.store.loginState.error : null
+        login = (e) => {
+          e.preventDefault();
+          const { username, password } = this.state;
+          this.props.AuthStore.login({ username, password });
+        };
 
-    return (
-      <div className='login container'>
-        <div className='row'>
-          <div className='col'>
-            <input
-              id='username-input'
-              type='text'
-              name='username'
-              placeholder='username'
-              className='form-control form-control-lg'
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  this.login(e)
-                }
-              }}
-              onChange={this.handleUsernameChange}
-              value={this.state.username}
-            />
-          </div>
-        </div>
-        <div className='row pt-2'>
-          <div className='col'>
-            <input
-              id='password-input'
-              type='password'
-              name='password'
-              placeholder='password'
-              className='form-control form-control-lg'
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  this.login(e)
-                }
-              }}
-              onChange={this.handlePasswordChange}
-              value={this.state.password}
-            />
-          </div>
-        </div>
-        <div className='row pt-2'>
-          <div className='col'>
-            <input
-              className='btn btn-success btn-block mb-2'
-              type='submit'
-              onClick={this.login}
-              value='Login'
-            />
-          </div>
-        </div>
-        <div className='row pt-2'>
-          <div className='col'>
-            {error && <div className='alert alert-danger' role='alert'>{error}</div>}
-          </div>
-        </div>
-      </div>
+        render() {
+          const error = this.props.AuthStore.loginState
+            ? this.props.AuthStore.loginState.error
+            : null;
+
+          const { from } = this.props.location.state || {
+            from: { pathname: '/' },
+          };
+          const redirectToReferrer = this.props.AuthStore.isAuthenticated;
+
+          if (redirectToReferrer) {
+            return <Redirect to={from} />;
+          }
+
+          return (
+            <div className="login container">
+              <div className="row">
+                <div className="col">
+                  <input
+                    id="username-input"
+                    type="text"
+                    name="username"
+                    placeholder="username"
+                    className="form-control form-control-lg"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        this.login(e);
+                      }
+                    }}
+                    onChange={this.handleUsernameChange}
+                    value={this.state.username}
+                  />
+                </div>
+              </div>
+              <div className="row pt-2">
+                <div className="col">
+                  <input
+                    id="password-input"
+                    type="password"
+                    name="password"
+                    placeholder="password"
+                    className="form-control form-control-lg"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        this.login(e);
+                      }
+                    }}
+                    onChange={this.handlePasswordChange}
+                    value={this.state.password}
+                  />
+                </div>
+              </div>
+              <div className="row pt-2">
+                <div className="col">
+                  <input
+                    className="btn btn-success btn-block mb-2"
+                    type="submit"
+                    onClick={this.login}
+                    value="Login"
+                  />
+                </div>
+              </div>
+              <div className="row pt-2">
+                <div className="col">
+                  {error && (
+                    <div className="alert alert-danger" role="alert">
+                      {error}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        }
+      }
     )
-  }
-}
+  )
+);
 
-export default inject('store')(observer(Login))
+export default Login;

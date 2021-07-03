@@ -1,11 +1,16 @@
-import React, { Component } from 'react';
-import { inject, observer, Provider } from 'mobx-react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { observer, Provider } from 'mobx-react';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 
 import './App.scss';
 
 import { RootStore, AuthStore } from '../../stores';
-import { Login, Home, ProtectedRoute } from '../';
+import { Login, Home, NotFound, ProtectedRoute } from '../';
 
 const stores = { RootStore, AuthStore };
 
@@ -14,11 +19,12 @@ const App = observer(() => {
     <Provider {...stores}>
       <Router>
         <Switch>
-          <ProtectedRoute path="/home" component={ComponentA} />
-          <Route path="/" exact component={Home} />
+          <Redirect exact from="/" to="/home" />
+          <ProtectedRoute path="/home" component={Home} />
           <Route path="/login">
             <Login />
           </Route>
+          <Route component={NotFound} />
         </Switch>
       </Router>
     </Provider>
@@ -26,18 +32,3 @@ const App = observer(() => {
 });
 
 export default App;
-
-// TODO - this is just an example for the ProtectedRoute
-// Delete when we've got something useful
-const ComponentA = inject(
-  'AuthStore',
-  'RootStore'
-)(
-  observer(
-    class ComponentA extends Component {
-      render() {
-        return <h1>Hello Protected</h1>;
-      }
-    }
-  )
-);

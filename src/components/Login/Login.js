@@ -18,7 +18,7 @@ const Login = inject('AuthStore')(
         }
 
         clearErrors = () => {
-          if (this.props.AuthStore.loginState) {
+          if (this.props.AuthStore.loginError) {
             this.props.AuthStore.resetLoginError();
           }
         };
@@ -40,8 +40,8 @@ const Login = inject('AuthStore')(
         };
 
         render() {
-          const error = this.props.AuthStore.loginState
-            ? this.props.AuthStore.loginState.error
+          const error = this.props.AuthStore.loginError
+            ? this.props.AuthStore.loginError
             : null;
 
           const { from } = this.props.location.state || {

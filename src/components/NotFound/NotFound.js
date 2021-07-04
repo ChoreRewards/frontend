@@ -7,7 +7,7 @@ import notFoudImage from '../../images/dog-ate-this-page.png';
 const NotFound = class NotFound extends Component {
   render() {
     return (
-      <div clasName="wrapper">
+      <div className="wrapper">
         <Navbar />
         <div className="container">
           <div className="row">

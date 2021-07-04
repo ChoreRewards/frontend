@@ -10,24 +10,25 @@ class AuthStore {
 
     makePersistable(this, {
       name: 'AuthStore',
-      properties: ['authToken', 'isAuthenticated'],
+      properties: ['authToken', 'isAuthenticated', 'isAdmin', 'isParent'],
       storage: window.localStorage,
     });
   }
 
-  loginState = null;
-  authToken = '';
+  loginError = null;
+
+  authToken = null;
   isAuthenticated = false;
+  isAdmin = false;
+  isParent = false;
 
   resetLoginError() {
-    this.loginState.error = null;
+    this.loginError = null;
   }
 
   login({ username, password }) {
     if (!username || !password) {
-      this.loginState = {
-        error: 'Please provide username and password',
-      };
+      this.loginError = 'Please provide username and password';
       return;
     }
     const url = config.server.baseURL + '/login';
@@ -41,22 +42,24 @@ class AuthStore {
         runInAction(() => {
           this.authToken = res.data.token;
           this.isAuthenticated = true;
+          this.isAdmin = res.data.isAdmin;
+          this.isParent = res.data.isParent;
         });
       })
       .catch((err) => {
         console.log(err);
         runInAction(() => {
-          this.loginState = {
-            error: err?.response?.data?.message,
-          };
+          this.loginError = err?.response?.data?.message;
         });
       });
   }
 
-  logout() {
+  logout = () => {
     this.authToken = null;
     this.isAuthenticated = false;
-  }
+    this.isAdmin = false;
+    this.isParent = false;
+  };
 }
 
 const authStore = new AuthStore();

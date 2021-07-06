@@ -1,49 +1,54 @@
-import { makeAutoObservable, runInAction } from 'mobx';
-import { makePersistable } from 'mobx-persist-store';
+import { makeAutoObservable, runInAction } from "mobx";
+import { makePersistable } from "mobx-persist-store";
+import React from "react";
 
-import config from '../../config.json';
-import axios from 'axios';
+import config from "../../config.json";
+import axios from "axios";
 
 class AuthStore {
   constructor() {
     makeAutoObservable(this);
 
     makePersistable(this, {
-      name: 'AuthStore',
-      properties: ['authToken', 'isAuthenticated', 'isAdmin', 'isParent'],
+      name: "AuthStore",
+      properties: ["loginState"],
       storage: window.localStorage,
     });
   }
 
-  loginError = null;
+  loginState = {
+    error: null,
+    authToken: null,
+    isAuthenticated: false,
+    isAdmin: false,
+    isParent: false,
+  };
 
-  authToken = null;
-  isAuthenticated = false;
-  isAdmin = false;
-  isParent = false;
+  resetLoginError = () => {
+    this.loginState.error = null;
+  };
 
-  resetLoginError() {
-    this.loginError = null;
-  }
-
-  login({ username, password }) {
+  login = ({ username, password }) => {
     if (!username || !password) {
-      this.loginError = 'Please provide username and password';
+      this.loginState.error = "Please provide username and password";
       return;
     }
-    const url = config.server.baseURL + '/login';
+    const url = config.server.baseURL + "/login";
     axios({
-      method: 'post',
-      headers: { 'content-type': 'application/json' },
+      method: "post",
+      headers: { "content-type": "application/json" },
       data: { username, password },
       url,
     })
       .then((res) => {
         runInAction(() => {
-          this.authToken = res.data.token;
-          this.isAuthenticated = true;
-          this.isAdmin = res.data.isAdmin;
-          this.isParent = res.data.isParent;
+          this.loginState = {
+            error: null,
+            authToken: res.data.token,
+            isAuthenticated: true,
+            isAdmin: res.data.isAdmin,
+            isParent: res.data.isParent,
+          };
         });
       })
       .catch((err) => {
@@ -52,15 +57,19 @@ class AuthStore {
           this.loginError = err?.response?.data?.message;
         });
       });
-  }
+  };
 
   logout = () => {
-    this.authToken = null;
-    this.isAuthenticated = false;
-    this.isAdmin = false;
-    this.isParent = false;
+    this.loginState = {
+      error: null,
+      authToken: null,
+      isAuthenticated: false,
+      isAdmin: false,
+      isParent: false,
+    };
   };
 }
 
 const authStore = new AuthStore();
-export default authStore;
+const AuthStoreContext = React.createContext(authStore);
+export default AuthStoreContext;

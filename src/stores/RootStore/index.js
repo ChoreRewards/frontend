@@ -1,2 +1,2 @@
-import RootStore from "./RootStore";
-export default RootStore;
+import RootStoreContext from "./RootStore";
+export default RootStoreContext;

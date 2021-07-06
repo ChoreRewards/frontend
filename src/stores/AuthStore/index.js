@@ -1,2 +1,2 @@
-import AuthStore from "./AuthStore";
-export default AuthStore;
+import AuthStoreContext from "./AuthStore";
+export default AuthStoreContext;

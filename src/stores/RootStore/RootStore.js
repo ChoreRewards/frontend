@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import React from "react";
 
 class RootStore {
   constructor() {
@@ -7,4 +8,5 @@ class RootStore {
 }
 
 const rootStore = new RootStore();
-export default rootStore;
+const RootStoreContext = React.createContext(rootStore);
+export default RootStoreContext;

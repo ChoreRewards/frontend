@@ -1,27 +1,29 @@
+import { observer } from "mobx-react";
+import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { inject } from "mobx-react";
 
-const ProtectedRouteComponent = ({
-  component: Component,
-  AuthStore,
-  ...rest
-}) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      AuthStore.isAuthenticated ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: "/login",
-            state: { from: props.location },
-          }}
-        />
-      )
-    }
-  />
-);
+import AuthStoreContext from "../../stores/AuthStore";
 
-const ProtectedRoute = inject("AuthStore")(ProtectedRouteComponent);
+export const ProtectedRoute = observer(({ component: Component, ...rest }) => {
+  const { loginState } = useContext(AuthStoreContext);
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        loginState.isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location },
+            }}
+          />
+        )
+      }
+    />
+  );
+});
+
 export default ProtectedRoute;

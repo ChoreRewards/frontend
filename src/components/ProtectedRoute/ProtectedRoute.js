@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 
-import AuthStoreContext from "../../stores/AuthStore";
+import { AuthStoreContext } from "../../stores";
 
 export const ProtectedRoute = observer(({ component: Component, ...rest }) => {
   const { loginState } = useContext(AuthStoreContext);

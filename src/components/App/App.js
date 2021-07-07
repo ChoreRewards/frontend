@@ -9,7 +9,7 @@ import {
 
 import "./App.scss";
 
-import { Login, Home, NotFound, ProtectedRoute } from "../";
+import { Login, Home, NotFound, ProtectedRoute, Admin } from "../";
 
 const App = observer(() => {
   return (
@@ -17,6 +17,7 @@ const App = observer(() => {
       <Switch>
         <Redirect exact from="/" to="/home" />
         <ProtectedRoute path="/home" component={Home} />
+        <ProtectedRoute path="/admin" component={Admin} />
         <Route path="/login">
           <Login />
         </Route>

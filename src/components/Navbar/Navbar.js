@@ -1,15 +1,15 @@
-import React, { Component } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 
 import defaultAvatar from "../../images/avatar-default.png";
-import AuthStoreContext from "../../stores/AuthStore";
+import { AuthStoreContext } from "../../stores";
 
-class Navbar extends Component {
-  static contextType = AuthStoreContext;
+const Navbar = withRouter(
+  observer(() => {
+    const { loginState, logout } = useContext(AuthStoreContext);
 
-  render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div className="container-fluid">
@@ -96,12 +96,12 @@ class Navbar extends Component {
                       Profile
                     </Link>
                   </li>
-                  {this.context.loginState.isAdmin ? (
+                  {loginState.isAdmin ? (
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
                   ) : null}
-                  {this.context.loginState.isAdmin ? (
+                  {loginState.isAdmin ? (
                     <li>
                       <Link className="dropdown-item" to="/admin">
                         Admin
@@ -113,7 +113,7 @@ class Navbar extends Component {
                   </li>
                   <li>
                     <Link
-                      onClick={this.context.logout}
+                      onClick={logout}
                       className="dropdown-item"
                       to="/login"
                     >
@@ -127,7 +127,7 @@ class Navbar extends Component {
         </div>
       </nav>
     );
-  }
-}
+  })
+);
 
-export default withRouter(observer(Navbar));
+export default Navbar;

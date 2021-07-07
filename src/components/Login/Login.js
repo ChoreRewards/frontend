@@ -1,54 +1,43 @@
-import React, { Component } from "react";
+import React, { useContext, useState } from "react";
 import { observer } from "mobx-react";
 import { withRouter, Redirect } from "react-router-dom";
 
 import "./Login.scss";
-import AuthStoreContext from "../../stores/AuthStore";
+import { AuthStoreContext } from "../../stores";
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
+const Login = withRouter(
+  observer((props) => {
+    const { loginState, resetLoginError, login } = useContext(AuthStoreContext);
 
-    this.state = {
-      username: "",
-      password: "",
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const clearErrors = () => {
+      if (loginState.error) {
+        resetLoginError();
+      }
     };
-  }
 
-  static contextType = AuthStoreContext;
+    const handleUsernameChange = (e) => {
+      clearErrors();
+      setUsername(e.target.value);
+    };
 
-  clearErrors = () => {
-    if (this.context.loginState.error) {
-      this.context.resetLoginError();
-    }
-  };
+    const handlePasswordChange = (e) => {
+      clearErrors();
+      setPassword(e.target.value);
+    };
 
-  handleUsernameChange = (e) => {
-    this.clearErrors();
-    this.setState({ username: e.target.value });
-  };
+    const handleLogin = (e) => {
+      e.preventDefault();
+      login({ username, password });
+    };
 
-  handlePasswordChange = (e) => {
-    this.clearErrors();
-    this.setState({ password: e.target.value });
-  };
-
-  login = (e) => {
-    e.preventDefault();
-    const { username, password } = this.state;
-    this.context.login({ username, password });
-  };
-
-  render() {
-    const error = this.context.loginState.error
-      ? this.context.loginState.error
-      : null;
-
-    const { from } = this.props.location.state || {
+    const { from } = props.location.state || {
       from: { pathname: "/" },
     };
 
-    const redirectToReferrer = this.context.loginState.isAuthenticated;
+    const redirectToReferrer = loginState.isAuthenticated;
 
     if (redirectToReferrer) {
       return <Redirect to={from} />;
@@ -66,11 +55,11 @@ class Login extends Component {
               className="form-control form-control-lg"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
-                  this.login(e);
+                  handleLogin(e);
                 }
               }}
-              onChange={this.handleUsernameChange}
-              value={this.state.username}
+              onChange={handleUsernameChange}
+              value={username}
             />
           </div>
         </div>
@@ -84,11 +73,11 @@ class Login extends Component {
               className="form-control form-control-lg"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
-                  this.login(e);
+                  handleLogin(e);
                 }
               }}
-              onChange={this.handlePasswordChange}
-              value={this.state.password}
+              onChange={handlePasswordChange}
+              value={password}
             />
           </div>
         </div>
@@ -97,23 +86,23 @@ class Login extends Component {
             <input
               className="btn btn-success btn-block mb-2"
               type="submit"
-              onClick={this.login}
+              onClick={handleLogin}
               value="Login"
             />
           </div>
         </div>
         <div className="row pt-2">
           <div className="col">
-            {error && (
+            {loginState.error && (
               <div className="alert alert-danger" role="alert">
-                {error}
+                {loginState.error}
               </div>
             )}
           </div>
         </div>
       </div>
     );
-  }
-}
+  })
+);
 
-export default withRouter(observer(Login));
+export default Login;

@@ -52,9 +52,8 @@ class AuthStore {
         });
       })
       .catch((err) => {
-        console.log(err);
         runInAction(() => {
-          this.loginError = err?.response?.data?.message;
+          this.loginState.error = err?.response?.data?.message;
         });
       });
   };

@@ -15,27 +15,27 @@ const Users = withRouter(
     const [isParent, setIsParent] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
 
-    const [error, setError] = useState("");
+    const [err, setErr] = useState("");
 
     const createUsr = (e) => {
       e.preventDefault();
       if (!username) {
-        setError("Username must be set");
+        setErr("Username must be set");
         return;
       }
 
       if (!password || !confirmPassword) {
-        setError("Password must be set and confirmed");
+        setErr("Password must be set and confirmed");
         return;
       }
 
-      if (password != confirmPassword) {
-        setError("Passwords do not match");
+      if (password !== confirmPassword) {
+        setErr("Passwords do not match");
         return;
       }
 
       if (isAdmin && !isParent) {
-        setError("Child admins are not allowed");
+        setErr("Child admins are not allowed");
         return;
       }
 
@@ -49,6 +49,8 @@ const Users = withRouter(
         isAdmin,
       });
     };
+
+    const error = props.userError || err;
 
     return (
       <div className="container">
@@ -111,22 +113,22 @@ const Users = withRouter(
         />
         <div className="accordion" id="create-user-accordion">
           <div className="accordion-item">
-            <h2 className="accordion-header" id="heading">
+            <h2 className="accordion-header" id="users-heading">
               <button
                 className="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#collapseTwo"
+                data-bs-target="#collapse-user"
                 aria-expanded="false"
-                aria-controls="collapseTwo"
+                aria-controls="collapse-user"
               >
                 Create User
               </button>
             </h2>
             <div
-              id="collapseTwo"
+              id="collapse-user"
               className="accordion-collapse collapse"
-              aria-labelledby="heading"
+              aria-labelledby="users-heading"
               data-bs-parent="#create-user-accordion"
             >
               <div className="accordion-body">
@@ -143,7 +145,7 @@ const Users = withRouter(
                             className="form-control"
                             id="inputUsername"
                             onChange={(e) =>
-                              setError("") || setUsername(e.target.value)
+                              setErr("") || setUsername(e.target.value)
                             }
                             value={username}
                           />
@@ -159,7 +161,7 @@ const Users = withRouter(
                             className="form-control"
                             id="inputEmail"
                             onChange={(e) =>
-                              setError("") || setEmail(e.target.value)
+                              setErr("") || setEmail(e.target.value)
                             }
                             value={email}
                           />
@@ -179,7 +181,7 @@ const Users = withRouter(
                             className="form-control"
                             id="inputPassword"
                             onChange={(e) =>
-                              setError("") || setPassword(e.target.value)
+                              setErr("") || setPassword(e.target.value)
                             }
                             value={password}
                           />
@@ -198,7 +200,7 @@ const Users = withRouter(
                             className="form-control"
                             id="inputPasswordConfirm"
                             onChange={(e) =>
-                              setError("") || setConfirmPassword(e.target.value)
+                              setErr("") || setConfirmPassword(e.target.value)
                             }
                             value={confirmPassword}
                           />
@@ -216,7 +218,7 @@ const Users = withRouter(
                             className="form-control"
                             id="inputAvatar"
                             onChange={(e) =>
-                              setError("") || setAvatar(e.target.value)
+                              setErr("") || setAvatar(e.target.value)
                             }
                             value={avatar}
                           />

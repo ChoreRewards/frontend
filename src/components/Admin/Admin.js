@@ -1,22 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
-
-import ReactTable from "react-table-6";
-import "react-table-6/react-table.css";
 
 import { AdminStoreContext, AuthStoreContext } from "../../stores";
 import { Navbar } from "../";
 import Users from "./Users";
+import Categories from "./Categories";
 
 const Admin = withRouter(
   observer(() => {
     const { loginState } = useContext(AuthStoreContext);
-    const { listUsers, createUser, adminState } = useContext(AdminStoreContext);
+    const {
+      listUsers,
+      createUser,
+
+      listCategories,
+      createCategory,
+
+      adminState,
+    } = useContext(AdminStoreContext);
 
     useEffect(() => {
       listUsers(loginState.authToken);
-    }, [adminState.users]);
+      listCategories(loginState.authToken);
+    }, [adminState]);
 
     if (!loginState.isAdmin) {
       // TODO - Make this prettier
@@ -30,6 +37,14 @@ const Admin = withRouter(
           createUser={createUser}
           loginState={loginState}
           users={adminState.users}
+          userError={adminState.userError}
+        />
+        <div className="mt-3 mb-3" />
+        <Categories
+          createCategory={createCategory}
+          loginState={loginState}
+          categories={adminState.categories}
+          categoryError={adminState.categoryError}
         />
       </div>
     );
